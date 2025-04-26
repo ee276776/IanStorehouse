@@ -5,399 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
 
     <title>Ian's WebSite</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: #333;
-            color: #fff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-family: 'Orbitron', sans-serif;
-
-            color: #00fff7;
-            text-shadow: 0 0 5px #00fff7, 0 0 10px #00fff7, 0 0 20px #00fff7;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-
-        .nav-links li {
-            margin-left: 2rem;
-        }
-
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #66c2ff;
-        }
-
-        /* 漢堡選單按鈕 */
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 30px;
-            height: 21px;
-            cursor: pointer;
-        }
-
-        .menu-toggle span {
-            display: block;
-            height: 3px;
-            width: 100%;
-            background-color: #fff;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .hero {
-            height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1200/800') center/cover no-repeat;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #fff;
-            padding: 0 1rem;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 600px;
-        }
-
-        .section {
-            padding: 5rem 10%;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background-color: #66c2ff;
-        }
-
-        /* 工作經歷區塊 */
-        #experience {
-            background-color: #fff;
-        }
-
-        .timeline {
-            position: relative;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .timeline::after {
-            content: '';
-            position: absolute;
-            width: 6px;
-            background-color: #66c2ff;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -3px;
-        }
-
-        .container {
-            padding: 10px 40px;
-            position: relative;
-            background-color: inherit;
-            width: 50%;
-        }
-
-        .container.left {
-            left: 0;
-        }
-
-        .container.right {
-            left: 50%;
-        }
-
-        .container::after {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            right: -17px;
-            background-color: #fff;
-            border: 4px solid #66c2ff;
-            top: 15px;
-            border-radius: 50%;
-            z-index: 1;
-            transition: background-color 0.3s ease;
-        }
-
-        .container.right::after {
-            left: -16px;
-        }
-
-        /* 工作經歷方塊懸停特效 */
-        .container:hover::after {
-            background-color: #66c2ff;
-        }
-
-        .content {
-            padding: 20px 30px;
-            background-color: #f9f9f9;
-            position: relative;
-            border-radius: 6px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        /* 工作經歷方塊懸停特效 */
-        .content:hover {
-            background-color: #e6f3ff;
-            transform: translateY(-5px) scale(1.03);
-            box-shadow: 0 8px 20px rgba(102, 194, 255, 0.3);
-            border-left: 5px solid #66c2ff;
-        }
-
-        .content h3 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        /* 技能區塊 */
-        #skills {
-            background-color: #f0f8ff;
-        }
-
-        .skills-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .skill-box {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 2rem;
-            margin: 1rem;
-            width: 300px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-
-        .skill-box:hover {
-            transform: translateY(-5px);
-        }
-
-        .skill-box h3 {
-            margin-bottom: 1rem;
-            color: #333;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background-color: #e0e0e0;
-            border-radius: 4px;
-            margin-bottom: 1.5rem;
-        }
-
-        .progress {
-            height: 100%;
-            border-radius: 4px;
-            background-color: #66c2ff;
-        }
-
-        /* 作品區塊 */
-        #portfolio {
-            background-color: #fff;
-        }
-
-        .portfolio-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .portfolio-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .portfolio-img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .portfolio-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-            color: #fff;
-            text-align: center;
-            padding: 1rem;
-        }
-
-        .portfolio-item:hover .portfolio-overlay {
-            opacity: 1;
-        }
-
-        .portfolio-overlay h4 {
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .portfolio-overlay p {
-            margin-bottom: 1rem;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.5rem 1.5rem;
-            background-color: #66c2ff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #3399ff;
-        }
-
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 2rem 0;
-        }
-
-        /* 響應式設計 */
-        @media screen and (max-width: 768px) {
-            .menu-toggle {
-                display: flex;
-            }
-
-            .nav-links {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: #333;
-                flex-direction: column;
-                align-items: center;
-                padding: 20px 0;
-                display: none;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .nav-links li {
-                margin: 10px 0;
-            }
-
-            .section {
-                padding: 4rem 5%;
-            }
-
-            .timeline::after {
-                left: 31px;
-            }
-
-            .container {
-                width: 100%;
-                padding-left: 70px;
-                padding-right: 25px;
-            }
-
-            .container.right {
-                left: 0;
-            }
-
-            .container.left::after,
-            .container.right::after {
-                left: 15px;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -486,37 +97,80 @@
 
     <section id="portfolio" class="section">
         <h2 class="section-title">作品集</h2>
-        <div class="portfolio-container">
-            <div class="portfolio-item">
-                <img src="/api/placeholder/400/250" alt="作品1" class="portfolio-img">
-                <div class="portfolio-overlay">
-                    <h4>電子商務網站</h4>
-                    <p>為客戶打造的全功能電子商務平台，包含產品展示、購物車和支付系統。</p>
-                    <a href="#" class="btn">查看詳情</a>
+
+        <!-- 公司開發專案 -->
+        <div class="project-category">
+            <h3>公司開發專案</h3>
+            <div class="portfolio-container">
+                <div class="portfolio-item">
+                    <!-- 專案圖片 -->
+                    <img src="./images/logo-light.png" alt="原住民文化事業基金會" class="portfolio-img">
+
+                    <!-- 滑鼠懸停時出現的說明內容 -->
+                    <div class="portfolio-overlay">
+                        <h4>原住民文化事業基金會</h4>
+                        <p>
+                            該網站主要介紹原住民文化，內含節目影片，並支援分集、分季度管理。
+                            影音資料透過 API 與串流廠商串接，自動更新節目內容。
+                            我主要負責後端資料庫建構、API 串接、以及前後台功能擴充與維護。
+                        </p>
+                        <a href="https://www.ipcf.org.tw/" class="btn">瀏覽網站</a>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="./images/logo-white.png" alt="專案2" class="portfolio-img portfolio-grey">
+                    <div class="portfolio-overlay">
+                        <h4>國立教育廣播電臺</h4>
+                        <p class="description">
+                            本網站以提供電台 Live 播放與節目單集收聽為核心功能，另設有電台參訪報名系統，並將參訪活動製作為花絮內容上傳展示，提升使用者參與度與平台豐富度。
+                            本人主要負責電台側錄機制的開發、舊官網資料遷移作業、以及初期 API 專案的架構設計與資料庫規劃。
+                            在專案初期亦參與前端頁面之 API 串接，協助建立前後端資料流通機制。
+                        </p>
+                        <a href="https://wwwtest.ner.gov.tw/" class="btn">瀏覽網站</a>
+                    </div>
                 </div>
             </div>
-            <div class="portfolio-item">
-                <img src="/api/placeholder/400/250" alt="作品2" class="portfolio-img">
-                <div class="portfolio-overlay">
-                    <h4>企業品牌網站</h4>
-                    <p>為一家科技公司設計的現代化品牌網站，展示其產品和服務。</p>
-                    <a href="#" class="btn">查看詳情</a>
+            <p class="disclaimer">※ 部分公司專案內容僅供展示參考，未揭露內部機密資訊。</p>
+        </div>
+
+        <!-- 分隔線 -->
+        <div class="divider"></div>
+
+        <!-- 個人作品 -->
+        <div class="project-category">
+            <h3>個人作品集</h3>
+            <div class="portfolio-container">
+                <div class="portfolio-item">
+                    <img src="/api/placeholder/400/250" alt="作品1" class="portfolio-img">
+                    <div class="portfolio-overlay">
+                        <h4>電子商務網站</h4>
+                        <p>為客戶打造的全功能電子商務平台，包含產品展示、購物車和支付系統。</p>
+                        <a href="#" class="btn">查看詳情</a>
+                    </div>
                 </div>
-            </div>
-            <div class="portfolio-item">
-                <img src="/api/placeholder/400/250" alt="作品3" class="portfolio-img">
-                <div class="portfolio-overlay">
-                    <h4>行動應用程式</h4>
-                    <p>開發的健康追蹤移動應用，具有數據分析和用戶社交功能。</p>
-                    <a href="#" class="btn">查看詳情</a>
+                <div class="portfolio-item">
+                    <img src="/api/placeholder/400/250" alt="作品2" class="portfolio-img">
+                    <div class="portfolio-overlay">
+                        <h4>企業品牌網站</h4>
+                        <p>為一家科技公司設計的現代化品牌網站，展示其產品和服務。</p>
+                        <a href="#" class="btn">查看詳情</a>
+                    </div>
                 </div>
-            </div>
-            <div class="portfolio-item">
-                <img src="/api/placeholder/400/250" alt="作品4" class="portfolio-img">
-                <div class="portfolio-overlay">
-                    <h4>部落格平台</h4>
-                    <p>設計並開發的內容管理系統，提供直觀的內容發布體驗。</p>
-                    <a href="#" class="btn">查看詳情</a>
+                <div class="portfolio-item">
+                    <img src="/api/placeholder/400/250" alt="作品3" class="portfolio-img">
+                    <div class="portfolio-overlay">
+                        <h4>行動應用程式</h4>
+                        <p>開發的健康追蹤移動應用，具有數據分析和用戶社交功能。</p>
+                        <a href="#" class="btn">查看詳情</a>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <img src="/api/placeholder/400/250" alt="作品4" class="portfolio-img">
+                    <div class="portfolio-overlay">
+                        <h4>部落格平台</h4>
+                        <p>設計並開發的內容管理系統，提供直觀的內容發布體驗。</p>
+                        <a href="#" class="btn">查看詳情</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -525,53 +179,8 @@
     <footer>
         <p>&copy; Copyright © Ian Site 2025</p>
     </footer>
+    <script src="script.js"></script>
 
-    <script>
-        // 平滑滾動功能
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // 滾動時改變導航欄顏色
-        window.addEventListener('scroll', function () {
-            const header = document.querySelector('header');
-            header.classList.toggle('scrolled', window.scrollY > 0);
-        });
-
-        // 添加動畫效果
-        window.addEventListener('scroll', function () {
-            const sections = document.querySelectorAll('.section');
-
-            sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
-                const windowHeight = window.innerHeight;
-
-                if (sectionTop < windowHeight * 0.75) {
-                    section.classList.add('appear');
-                }
-            });
-        });
-
-        // 漢堡選單功能
-        document.querySelector('.menu-toggle').addEventListener('click', function () {
-            document.querySelector('.nav-links').classList.toggle('active');
-        });
-
-        // 點擊選項後關閉選單
-        document.querySelectorAll('.nav-links a').forEach(item => {
-            item.addEventListener('click', function () {
-                if (window.innerWidth <= 768) {
-                    document.querySelector('.nav-links').classList.remove('active');
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
