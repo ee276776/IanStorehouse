@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <title>Ian's Blog - 文章列表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            color: #00fff7;
+            text-shadow: 0 0 5px #00fff7, 0 0 10px #00fff7, 0 0 20px #00fff7;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #66c2ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: #66c2ff;
+        }
+
+        .nav-links a.active {
+            color: #66c2ff;
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        main {
+            margin-top: 80px;
+            padding: 5rem 10%;
+            min-height: calc(100vh - 80px);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4ecfb 100%);
+            position: relative;
+        }
+
+        main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2366c2ff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        .blog-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            color: #333;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: #66c2ff;
+        }
+
+        .loading-message {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin: 3rem 0;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            list-style: none;
+            padding: 0;
+        }
+
+        .article-item {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .article-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 194, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .article-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(102, 194, 255, 0.2);
+            border-left: 5px solid #66c2ff;
+        }
+
+        .article-item:hover::before {
+            opacity: 1;
+        }
+
+        .article-content {
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .article-title {
+            color: #333;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.4;
+            display: block;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .article-title:hover {
+            color: #66c2ff;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .article-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .article-date::before {
+            content: '📅';
+            font-size: 0.8rem;
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background-color: rgba(102, 194, 255, 0.1);
+            color: #66c2ff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .article-excerpt {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .read-more {
+            display: inline-block;
+            color: #66c2ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .read-more::after {
+            content: ' →';
+            transition: transform 0.3s ease;
+        }
+
+        .read-more:hover {
+            color: #3399ff;
+        }
+
+        .read-more:hover::after {
+            transform: translateX(3px);
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 3rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .error-message h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+
+        .error-message p {
+            color: #666;
+        }
+
+        footer {
+            background-color: #1a1a1a;
+            color: #fff;
+            text-align: center;
+            padding: 2.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23ffffff' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+        }
+
+        /* 響應式設計 */
+        @media screen and (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: rgba(23, 32, 42, 0.95);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                display: none;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 12px 0;
+            }
+
+            main {
+                padding: 3rem 5%;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .article-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .article-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* 載入動畫 */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #66c2ff;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 文章進入動畫 */
+        .article-item {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .article-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .article-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .article-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .article-item:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .article-item:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .article-item:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">Ian Site</div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">首頁</a></li>
+                <li><a href="#" class="active">部落格</a></li>
+                <li><a href="index.html#experience">工作經歷</a></li>
+                <li><a href="index.html#skills">技能</a></li>
+                <li><a href="index.html#portfolio">作品</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="blog-container">
+            <h1 class="page-title">技術文章分享</h1>
+            <ul id="articleList" class="article-grid">
+                <li class="loading-message">
+                    <div class="loading-spinner"></div>
+                    載入文章中...
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; Copyright © Ian Site 2025</p>
+    </footer>
+
+    <script>
+        const listEl = document.getElementById('articleList');
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        // 手機選單功能
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('zh-TW', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // 截取文章摘要
+        function getExcerpt(description, maxLength = 120) {
+            if (!description) return '點擊閱讀完整文章...';
+            if (description.length <= maxLength) return description;
+            return description.substring(0, maxLength) + '...';
+        }
+
+        // 載入文章
+        fetch('https://dev.to/api/articles?username=ian_chen_8bfda2699e7263dc&per_page=10')
+            .then(response => {
+                if (!response.ok) throw new Error('載入失敗');
+                return response.json();
+            })
+            .then(data => {
+                listEl.innerHTML = '';
+
+                if (data.length === 0) {
+                    listEl.innerHTML = `
+                        <li class="error-message">
+                            <h3>暫無文章</h3>
+                            <p>目前還沒有發布任何文章，請稍後再來查看。</p>
+                        </li>
+                    `;
+                    return;
+                }
+
+                data.forEach((article, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'article-item';
+                    li.style.animationDelay = `${(index + 1) * 0.1}s`;
+
+                    const tags = article.tag_list.slice(0, 3).map(tag =>
+                        `<span class="tag">${tag}</span>`
+                    ).join('');
+
+                    li.innerHTML = `
+                        <div class="article-content">
+                            <a href="ArticleDetail.html?id=${article.id}" class="article-title">
+                                ${article.title}
+                            </a>
+                            <div class="article-meta">
+                                <div class="article-date">${formatDate(article.published_at)}</div>
+                                <div class="article-tags">${tags}</div>
+                            </div>
+                            <p class="article-excerpt">${getExcerpt(article.description)}</p>
+                            <a href="ArticleDetail.html?id=${article.id}" class="read-more">閱讀更多</a>
+                        </div>
+                    `;
+                    listEl.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error(error);
+                listEl.innerHTML = `
+                    <li class="error-message">
+                        <h3>載入失敗</h3>
+                        <p>無法載入文章列表，請檢查網路連線或稍後再試。</p>
+                    </li>
+                `;
+            });
+
+        // 滾動時改變 header 樣式
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+
+</html>

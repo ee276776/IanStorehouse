@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <title>文章內容 - Ian's Blog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            color: #00fff7;
+            text-shadow: 0 0 5px #00fff7, 0 0 10px #00fff7, 0 0 20px #00fff7;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #66c2ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: #66c2ff;
+        }
+
+        .nav-links a.active {
+            color: #66c2ff;
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        main {
+            margin-top: 80px;
+            padding: 3rem 5%;
+            min-height: calc(100vh - 80px);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4ecfb 100%);
+            position: relative;
+        }
+
+        main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2366c2ff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            color: #66c2ff;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn::before {
+            content: '←';
+            margin-right: 0.5rem;
+            font-size: 1.2em;
+        }
+
+        .back-btn:hover {
+            background-color: #66c2ff;
+            color: white;
+            transform: translateX(-3px);
+        }
+
+        .article-header {
+            background-color: #fff;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .article-date::before {
+            content: '📅';
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tag {
+            background-color: rgba(102, 194, 255, 0.1);
+            color: #66c2ff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .article-content {
+            background-color: #fff;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            line-height: 1.8;
+        }
+
+        .article-content h1,
+        .article-content h2,
+        .article-content h3,
+        .article-content h4 {
+            color: #333;
+            margin: 2rem 0 1rem 0;
+            line-height: 1.4;
+        }
+
+        .article-content h1 {
+            font-size: 2rem;
+            border-bottom: 3px solid #66c2ff;
+            padding-bottom: 0.5rem;
+        }
+
+        .article-content h2 {
+            font-size: 1.6rem;
+            color: #66c2ff;
+        }
+
+        .article-content h3 {
+            font-size: 1.3rem;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        .article-content pre {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.4;
+        }
+
+        .article-content code {
+            background-color: #f7fafc;
+            color: #e53e3e;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .article-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        .article-content blockquote {
+            border-left: 4px solid #66c2ff;
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #666;
+            background-color: rgba(102, 194, 255, 0.05);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .article-content ul,
+        .article-content ol {
+            margin: 1rem 0 1.5rem 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .article-content a {
+            color: #66c2ff;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .article-content a:hover {
+            border-bottom-color: #66c2ff;
+        }
+
+        /* 圖片處理樣式 */
+        .article-content img {
+            max-width: 150px;
+            height: auto;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-content img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 圖片放大模態框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+            animation: zoomIn 0.3s ease;
+        }
+
+        .modal img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #66c2ff;
+        }
+
+        .loading-message {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin: 3rem 0;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #66c2ff;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 3rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .error-message h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background-color: #1a1a1a;
+            color: #fff;
+            text-align: center;
+            padding: 2.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23ffffff' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+        }
+
+        /* 動畫 */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* 響應式設計 */
+        @media screen and (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: rgba(23, 32, 42, 0.95);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                display: none;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 12px 0;
+            }
+
+            main {
+                padding: 2rem 3%;
+            }
+
+            .article-header,
+            .article-content {
+                padding: 2rem;
+            }
+
+            .article-title {
+                font-size: 2rem;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .modal-content {
+                max-width: 95%;
+                max-height: 95%;
+            }
+
+            .close {
+                top: 10px;
+                right: 25px;
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">Ian Site</div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">首頁</a></li>
+                <li><a href="ArticleList.html" class="active">部落格</a></li>
+                <li><a href="index.html#experience">工作經歷</a></li>
+                <li><a href="index.html#skills">技能</a></li>
+                <li><a href="index.html#portfolio">作品</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="article-container">
+            <a href="ArticleList.html" class="back-btn">回到文章列表</a>
+
+            <div id="loadingMessage" class="loading-message">
+                <div class="loading-spinner"></div>
+                載入文章中...
+            </div>
+
+            <div id="articleHeader" class="article-header" style="display: none;">
+                <h1 id="title" class="article-title"></h1>
+                <div class="article-meta">
+                    <div id="date" class="article-date"></div>
+                    <div id="tags" class="article-tags"></div>
+                </div>
+            </div>
+
+            <div id="content" class="article-content" style="display: none;"></div>
+
+            <div id="errorMessage" class="error-message" style="display: none;">
+                <h3>載入失敗</h3>
+                <p>無法載入文章內容，請檢查網路連線或稍後再試。</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 圖片放大模態框 -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="">
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; Copyright © Ian Site 2025</p>
+    </footer>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const articleId = params.get('id');
+
+        const loadingEl = document.getElementById('loadingMessage');
+        const headerEl = document.getElementById('articleHeader');
+        const titleEl = document.getElementById('title');
+        const dateEl = document.getElementById('date');
+        const tagsEl = document.getElementById('tags');
+        const contentEl = document.getElementById('content');
+        const errorEl = document.getElementById('errorMessage');
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        // 手機選單功能
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('zh-TW', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // 圖片點擊放大功能
+        function initImageModal() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const span = document.getElementsByClassName('close')[0];
+
+            // 為所有圖片添加點擊事件
+            document.querySelectorAll('.article-content img').forEach(img => {
+                img.addEventListener('click', function () {
+                    modal.style.display = 'block';
+                    modalImg.src = this.src;
+                    modalImg.alt = this.alt;
+                });
+            });
+
+            // 關閉模態框
+            span.onclick = function () {
+                modal.style.display = 'none';
+            }
+
+            // 點擊模態框外部關閉
+            modal.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+
+            // ESC 鍵關閉
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+        console.log(articleId);
+        if (!articleId) {
+            loadingEl.style.display = 'none';
+            errorEl.style.display = 'block';
+            errorEl.querySelector('h3').textContent = '錯誤';
+            errorEl.querySelector('p').textContent = '未提供文章 ID，請從文章列表進入。';
+        } else {
+            fetch(`https://dev.to/api/articles/${articleId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('文章載入失敗');
+                    return response.json();
+                })
+                .then(article => {
+                    // 隱藏載入訊息
+                    loadingEl.style.display = 'none';
+
+                    // 顯示文章標題和meta信息
+                    titleEl.textContent = article.title;
+                    dateEl.textContent = formatDate(article.published_at);
+
+                    // // 處理標籤
+                    // if (article.tag_list && article.tag_list.length > 0) {
+                    //     tagsEl.innerHTML = article.tag_list.slice(0, 5).map(tag =>
+                    //         `<span class="tag">${tag}</span>`
+                    //     ).join('');
+                    // }
+
+                    headerEl.style.display = 'block';
+
+                    // 顯示文章內容
+                    contentEl.innerHTML = article.body_html;
+                    contentEl.style.display = 'block';
+
+                    // 更新頁面標題
+                    document.title = `${article.title} - Ian's Blog`;
+
+                    // 初始化圖片放大功能
+                    setTimeout(initImageModal, 100);
+                })
+                .catch(error => {
+                    console.error(error);
+                    loadingEl.style.display = 'none';
+                    errorEl.style.display = 'block';
+                });
+        }
+
+        // 滾動時改變 header 樣式
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.backgroundColor = 'rgba(51, 51, 51, 0.95)';
+            } else {
+                header.style.backgroundColor = '#333';
+            }
+        });
+    </script>
+</body>
+
+</html>
