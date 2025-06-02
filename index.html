@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Ian's WebSite</title>
 
 </head>
@@ -31,9 +31,64 @@
     </header>
 
     <section class="hero">
-        <h1>探索我的開發世界</h1>
-        <p>我是Ian，是一位熱愛寫程式的工程師，專注於後端系統的開發與效能優化。對於系統架構設計、資料流程管理與瓶頸排除特別有熱情，致力於打造穩定、可擴充且高效的應用服務。相信每一行程式碼都該有它存在的價值，並持續精進技術，讓開發不只是工作，更是一種樂趣與成就。
-        </p>
+        <div class="hero-container">
+            <!-- 左側照片區域 -->
+            <div class="hero-photo">
+                <div class="photo-frame">
+                    <img src="/api/placeholder/300/400" alt="Ian's Photo" class="profile-photo">
+                    <div class="photo-overlay">
+                        <div class="overlay-text">Ian</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側個人資訊區域 -->
+            <div class="hero-content">
+                <div class="content-card">
+                    <div class="greeting">
+                        <span class="greeting-text">/about</span>
+                    </div>
+
+                    <h1>嗨，我是一位全端開發者，來自台灣。</h1>
+
+                    <div class="tech-tags">
+                        <span class="tech-tag">Health</span>
+                        <span class="tech-tag">Crypto</span>
+                        <span class="tech-tag">AI</span>
+                    </div>
+
+                    <p class="intro-text">
+                        我在完成電腦科學學位後，已經在軟體開發領域耕耘超過十年。
+                        專注於後端系統的開發與效能優化，對於系統架構設計、資料流程管理與瓶頸排除特別有熱情，
+                        致力於打造穩定、可擴充且高效的應用服務。
+                    </p>
+
+                    <p class="hobby-text">
+                        當我不在開發產品時，我喜歡烹飪 🍳，
+                        並打一些球類運動 🏐。
+                    </p>
+
+                    <!-- 社交媒體連結 -->
+                    <div class="social-section">
+                        <span class="social-label">/socials</span>
+                        <div class="social-links">
+                            <a href="#" class="social-link twitter">
+                                <i class="fab fa-twitter"></i>
+                                <span>Twitter</span>
+                            </a>
+                            <a href="#" class="social-link github">
+                                <i class="fab fa-github"></i>
+                                <span>GitHub</span>
+                            </a>
+                            <a href="#" class="social-link linkedin">
+                                <i class="fab fa-linkedin"></i>
+                                <span>LinkedIn</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section id="experience" class="section">

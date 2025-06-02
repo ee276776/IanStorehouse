@@ -505,26 +505,34 @@
             return description.substring(0, maxLength) + '...';
         }
 
+
+        const originalUrl = `https://dev.to/api/articles?username=ian_chen_8bfda2699e7263dc&per_page=10`;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(originalUrl)}`;
+
         // 載入文章
-        fetch('https://dev.to/api/articles?username=ian_chen_8bfda2699e7263dc&per_page=10')
-            .then(response => {
-                if (!response.ok) throw new Error('載入失敗');
-                return response.json();
-            })
+        fetch(proxyUrl, {
+            headers: {
+                // 如果有 API Key，加在這裡
+                'api-key': 'ysp1moy5LksBrtUjRuPLkZ8n'
+            }
+        })
             .then(data => {
+                // 重要：要用 JSON.parse(data.contents) 而不是直接用 data
+                const articles = JSON.parse(data.contents);
                 listEl.innerHTML = '';
 
-                if (data.length === 0) {
+                if (articles.length === 0) {  // 改為 articles.length
                     listEl.innerHTML = `
-                        <li class="error-message">
-                            <h3>暫無文章</h3>
-                            <p>目前還沒有發布任何文章，請稍後再來查看。</p>
-                        </li>
-                    `;
+            <li class="error-message">
+                <h3>暫無文章</h3>
+                <p>目前還沒有發布任何文章，請稍後再來查看。</p>
+            </li>
+        `;
                     return;
                 }
 
-                data.forEach((article, index) => {
+                articles.forEach((article, index) => {  // 改為 articles.forEach
+                    // 其他代碼保持不變
                     const li = document.createElement('li');
                     li.className = 'article-item';
                     li.style.animationDelay = `${(index + 1) * 0.1}s`;
@@ -534,30 +542,21 @@
                     ).join('');
 
                     li.innerHTML = `
-                        <div class="article-content">
-                            <a href="ArticleDetail.html?id=${article.id}" class="article-title">
-                                ${article.title}
-                            </a>
-                            <div class="article-meta">
-                                <div class="article-date">${formatDate(article.published_at)}</div>
-                                <div class="article-tags">${tags}</div>
-                            </div>
-                            <p class="article-excerpt">${getExcerpt(article.description)}</p>
-                            <a href="ArticleDetail.html?id=${article.id}" class="read-more">閱讀更多</a>
-                        </div>
-                    `;
+            <div class="article-content">
+                <a href="ArticleDetail.html?id=${article.id}" class="article-title">
+                    ${article.title}
+                </a>
+                <div class="article-meta">
+                    <div class="article-date">${formatDate(article.published_at)}</div>
+                    <div class="article-tags">${tags}</div>
+                </div>
+                <p class="article-excerpt">${getExcerpt(article.description)}</p>
+                <a href="ArticleDetail.html?id=${article.id}" class="read-more">閱讀更多</a>
+            </div>
+        `;
                     listEl.appendChild(li);
                 });
             })
-            .catch(error => {
-                console.error(error);
-                listEl.innerHTML = `
-                    <li class="error-message">
-                        <h3>載入失敗</h3>
-                        <p>無法載入文章列表，請檢查網路連線或稍後再試。</p>
-                    </li>
-                `;
-            });
 
         // 滾動時改變 header 樣式
         window.addEventListener('scroll', () => {
