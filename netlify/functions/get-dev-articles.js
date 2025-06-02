@@ -27,10 +27,10 @@ exports.handler = async function (event, context) {
     try {
         // 向 Dev.to API 發送請求，並在 headers 中包含 api-key
         // 這是在後端發送請求，所以不受瀏覽器 CORS 限制
-        const response = await fetch(`https://dev.to/api/articles?username=<span class="math-inline">\{USERNAME\}&per\_page\=</span>{PER_PAGE}`, {
+        const response = await fetch(`https://dev.to/api/articles?username=${USERNAME}&per_page=${PER_PAGE}`, {
             method: 'GET',
             headers: {
-                'api-key': DEV_TO_API_KEY, // 這裡正確地將 API Key 作為 HTTP 頭部傳遞
+                'api-key': DEV_TO_API_KEY,
                 'Content-Type': 'application/json'
             }
         });
