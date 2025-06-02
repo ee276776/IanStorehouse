@@ -478,6 +478,8 @@
         <p>&copy; Copyright © Ian Site 2025</p>
     </footer>
 
+
+
     <script>
         const listEl = document.getElementById('articleList');
         const menuToggle = document.querySelector('.menu-toggle');
@@ -505,60 +507,80 @@
             return description.substring(0, maxLength) + '...';
         }
 
+        // --- 這裡是你需要修改的部分 ---
 
-        const originalUrl = `https://dev.to/api/articles?username=ian_chen_8bfda2699e7263dc&per_page=10`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(originalUrl)}`;
+        // 呼叫你的 Netlify Function 代理
+        // 這個路徑 /.netlify/functions/get-dev-articles 是你的 Netlify Function 實際部署的 URL
+        fetch('/.netlify/functions/get-dev-articles')
+            .then(response => {
+                if (!response.ok) {
+                    // 如果響應狀態碼不是 2xx，表示函數執行有問題或 Dev.to API 返回錯誤
+                    // 嘗試解析錯誤訊息並拋出，這樣我們可以在控制台看到更詳細的錯誤資訊
+                    return response.json().then(errorData => {
+                        throw new Error(`HTTP error! Status: ${response.status}, Details: ${JSON.stringify(errorData)}`);
+                    }).catch(() => {
+                        // 如果無法解析 JSON (例如返回非 JSON 格式的錯誤)
+                        throw new Error(`HTTP error! Status: ${response.status}, Could not parse error details from Netlify Function.`);
+                    });
+                }
+                return response.json(); // 解析 JSON 響應，這就是 Dev.to 返回的文章數據 (透過你的函數代理)
+            })
+            .then(articles => {
+                console.log('Fetched articles:', articles); // 在控制台查看獲取到的文章數據
+                listEl.innerHTML = ''; // 清空載入訊息
 
-        // 載入文章
-        fetch(proxyUrl, {
-            headers: {
-                // 如果有 API Key，加在這裡
-                'api-key': 'ysp1moy5LksBrtUjRuPLkZ8n'
-            }
-        })
-            .then(data => {
-                // 重要：要用 JSON.parse(data.contents) 而不是直接用 data
-                const articles = JSON.parse(data.contents);
-                listEl.innerHTML = '';
-
-                if (articles.length === 0) {  // 改為 articles.length
+                // 檢查返回的 articles 是否為陣列且非空
+                if (!Array.isArray(articles) || articles.length === 0) {
                     listEl.innerHTML = `
-            <li class="error-message">
-                <h3>暫無文章</h3>
-                <p>目前還沒有發布任何文章，請稍後再來查看。</p>
-            </li>
-        `;
+                    <li class="error-message">
+                        <h3>暫無文章</h3>
+                        <p>目前還沒有發布任何文章，請稍後再來查看。</p>
+                    </li>
+                `;
                     return;
                 }
 
-                articles.forEach((article, index) => {  // 改為 articles.forEach
-                    // 其他代碼保持不變
+                // 遍歷文章數據並動態生成 HTML
+                articles.forEach((article, index) => {
                     const li = document.createElement('li');
                     li.className = 'article-item';
                     li.style.animationDelay = `${(index + 1) * 0.1}s`;
 
-                    const tags = article.tag_list.slice(0, 3).map(tag =>
+                    // 確保 tag_list 存在且是陣列，防止空引用錯誤
+                    const tags = (article.tag_list || []).slice(0, 3).map(tag =>
                         `<span class="tag">${tag}</span>`
                     ).join('');
 
                     li.innerHTML = `
-            <div class="article-content">
-                <a href="ArticleDetail.html?id=${article.id}" class="article-title">
-                    ${article.title}
-                </a>
-                <div class="article-meta">
-                    <div class="article-date">${formatDate(article.published_at)}</div>
-                    <div class="article-tags">${tags}</div>
-                </div>
-                <p class="article-excerpt">${getExcerpt(article.description)}</p>
-                <a href="ArticleDetail.html?id=${article.id}" class="read-more">閱讀更多</a>
-            </div>
-        `;
+                    <div class="article-content">
+                        <a href="ArticleDetail.html?id=${article.id}" class="article-title">
+                            ${article.title}
+                        </a>
+                        <div class="article-meta">
+                            <div class="article-date">${formatDate(article.published_at)}</div>
+                            <div class="article-tags">${tags}</div>
+                        </div>
+                        <p class="article-excerpt">${getExcerpt(article.description)}</p>
+                        <a href="ArticleDetail.html?id=${article.id}" class="read-more">閱讀更多</a>
+                    </div>
+                `;
                     listEl.appendChild(li);
                 });
             })
+            .catch(error => {
+                // 捕獲並顯示任何錯誤
+                console.error('Error fetching articles:', error);
+                listEl.innerHTML = `
+                <li class="error-message">
+                    <h3>載入文章失敗</h3>
+                    <p>無法取得文章列表，請稍後再試。<br>錯誤訊息: ${error.message}</p>
+                </li>
+            `;
+            });
 
-        // 滾動時改變 header 樣式
+        // --- 以上是修改的部分 ---
+
+        // 滾動時改變 header 樣式 (你的原有代碼，保持不變)
         window.addEventListener('scroll', () => {
             const header = document.querySelector('header');
             if (window.scrollY > 50) {

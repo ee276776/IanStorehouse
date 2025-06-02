@@ -1,0 +1,18 @@
+[build]
+  # 告訴 Netlify 你的網站靜態檔案在哪裡。
+  # 如果你的 HTML/CSS/JS 檔案直接在專案根目錄，請設定為 "."
+  # 如果它們在一個叫做 "public" 或 "dist" 的資料夾內，請設定為 "public" 或 "dist"
+  # 以你目前的情況，應該是放在專案根目錄，所以建議設定為 "."
+  publish = "." 
+
+  # 告訴 Netlify 你的無伺服器函數 (Functions) 在哪裡。
+  # 我們將在下一步創建這個資料夾。
+  functions = "netlify/functions" 
+
+# [optional] 如果你想讓你的前端頁面呼叫 /api/get-dev-articles 也能正常運作
+# 而不是直接呼叫 /.netlify/functions/get-dev-articles，可以添加這個重定向規則。
+# 這只是讓 URL 看起來更乾淨，並非必需，但推薦。
+[[redirects]]
+  from = "/api/get-dev-articles"
+  to = "/.netlify/functions/get-dev-articles"
+  status = 200
