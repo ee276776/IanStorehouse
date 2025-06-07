@@ -654,27 +654,32 @@
                     return response.json();
                 })
                 .then(article => {
-                    // 隱藏載入訊息
                     loadingEl.style.display = 'none';
-
-                    // 顯示文章標題和meta信息
                     titleEl.textContent = article.title;
                     dateEl.textContent = formatDate(article.published_at);
-
-                    // // 處理標籤
-                    // if (article.tag_list && article.tag_list.length > 0) {
-                    //     tagsEl.innerHTML = article.tag_list.slice(0, 5).map(tag =>
-                    //         `<span class="tag">${tag}</span>`
-                    //     ).join('');
-                    // }
-
                     headerEl.style.display = 'block';
 
-                    // 顯示文章內容
-                    contentEl.innerHTML = article.body_html;
+                    // 1. 將 HTML 轉成 DOM
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(article.body_html, 'text/html');
+
+                    // 2. 移除不必要的元素
+                    const selectorsToRemove = [
+                        '.highlight__panel',
+                        '.highlight-action',
+                        '.crayons-icon',
+                        'svg.highlight-action',
+                        // 加入你想移除的其他 class
+                    ];
+
+                    selectorsToRemove.forEach(selector => {
+                        doc.querySelectorAll(selector).forEach(el => el.remove());
+                    });
+
+                    // 3. 將清理後的內容加入頁面
+                    contentEl.innerHTML = doc.body.innerHTML;
                     contentEl.style.display = 'block';
 
-                    // 更新頁面標題
                     document.title = `${article.title} - Ian's Blog`;
 
                     // 初始化圖片放大功能
