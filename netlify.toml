@@ -11,7 +11,7 @@
 
 # [optional] 如果你想讓你的前端頁面呼叫 /api/get-dev-articles 也能正常運作
 # 而不是直接呼叫 /.netlify/functions/get-dev-articles，可以添加這個重定向規則。
-# 這只是讓 URL 看起來更乾淨，並非必需，但推薦。
+# 這只是讓 URL 看起來更乾淨，並非必需，但推薦！
 [[redirects]]
   from = "/api/get-dev-articles"
   to = "/.netlify/functions/get-dev-articles"
