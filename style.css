@@ -304,6 +304,15 @@ nav {
     color: white;
 }
 
+.social-link.instagram {
+    border-color: #d954e6;
+}
+
+.social-link.instagram:hover {
+    background: #d954e6;
+    color: white;
+}
+
 .social-link.github {
     border-color: #333;
 }
